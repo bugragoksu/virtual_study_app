@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../../../widgets/buttons/base_button.dart';
 
-class LoginButton extends StatelessWidget {
+class SignButton extends StatelessWidget {
+  final bool isLogin;
   final Function(bool success, String message) onFinish;
   final TextEditingController emailController, passwordController;
-  const LoginButton(
+  const SignButton(
       {Key? key,
+      required this.isLogin,
       required this.onFinish,
       required this.emailController,
       required this.passwordController})
@@ -23,7 +25,7 @@ class LoginButton extends StatelessWidget {
             print(emailController.text);
             print(passwordController.text);
           },
-          title: "Giriş Yap",
+          title: isLogin ? "Sign up" : "Sign in",
         ));
   }
 }
