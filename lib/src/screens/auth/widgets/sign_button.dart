@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:virtual_study_app/src/screens/home/home_screen.dart';
 
 import '../../../widgets/buttons/base_button.dart';
 
@@ -22,8 +23,8 @@ class SignButton extends StatelessWidget {
         height: height * 0.06,
         child: BaseButton(
           onPressed: () {
-            print(emailController.text);
-            print(passwordController.text);
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (_) => HomeScreen()));
           },
           title: isLogin ? "Sign up" : "Sign in",
         ));
