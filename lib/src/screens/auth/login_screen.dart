@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../widgets/images/chat_image.dart';
 import '../../widgets/inputs/base_text_input.dart';
 import 'widgets/login_button.dart';
 
@@ -16,7 +17,7 @@ class LoginScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Placeholder(),
+            ChatImage(),
             SizedBox(
               height: height * 0.1,
             ),
