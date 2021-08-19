@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:virtual_study_app/src/screens/meet/meet_screen.dart';
 
 import '../../core/extensions/context_extension.dart';
 import '../../widgets/buttons/base_button.dart';
@@ -75,7 +76,10 @@ class DetailScreen extends StatelessWidget {
     return Container(
       width: context.width / 2,
       child: BaseButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => MeetScreen()));
+        },
         title: "Join",
       ),
     );
