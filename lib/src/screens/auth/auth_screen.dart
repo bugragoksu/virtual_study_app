@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/images/chat_image.dart';
 import '../../widgets/inputs/base_text_input.dart';
 import 'widgets/sign_button.dart';
+import '../../core/extensions/context_extension.dart';
 
 class AuthScreen extends StatefulWidget {
   AuthScreen({Key? key}) : super(key: key);
@@ -25,7 +26,6 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(32.0),
@@ -34,15 +34,15 @@ class _AuthScreenState extends State<AuthScreen> {
           children: [
             ChatImage(),
             SizedBox(
-              height: height * 0.1,
+              height: context.highValue,
             ),
             BaseTextInput(controller: emailController, hintText: "Email"),
             SizedBox(
-              height: height * 0.025,
+              height: context.height * 0.025,
             ),
             BaseTextInput(controller: passworController, hintText: "Password"),
             SizedBox(
-              height: height * 0.05,
+              height: context.mediumValue,
             ),
             SignButton(
                 isLogin: isLogin,
@@ -50,7 +50,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 passwordController: passworController,
                 onFinish: (success, err) {}),
             SizedBox(
-              height: height * 0.01,
+              height: context.lowValue,
             ),
             TextButton(
                 onPressed: () {

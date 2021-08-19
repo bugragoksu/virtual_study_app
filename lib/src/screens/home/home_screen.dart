@@ -10,12 +10,13 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height * 1.25,
           child: Padding(
             padding: const EdgeInsets.all(32.0),
             child: ListView.builder(
                 shrinkWrap: true,
-                itemCount: 10,
+                itemCount: 4,
                 itemBuilder: (_, i) => Container(
                       height: MediaQuery.of(context).size.height / 3,
                       child: _buildCourseColumn(),

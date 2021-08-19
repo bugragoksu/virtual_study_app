@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:virtual_study_app/src/screens/detail/detail_screen.dart';
 
 import 'course_card.dart';
 
@@ -13,7 +14,8 @@ class CardList extends StatelessWidget {
       itemCount: 10,
       itemBuilder: (_, index) => CourseCard(
           onTap: () {
-            print(index);
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (_) => DetailScreen()));
           },
           title: "Algorithms",
           imageURL: "imageURL"),
