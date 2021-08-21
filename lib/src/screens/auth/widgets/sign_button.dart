@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../../provider/user_repository.dart';
 import 'package:provider/provider.dart';
 import '../../../widgets/buttons/base_button.dart';
@@ -37,6 +38,11 @@ class _SignButtonState extends State<SignButton> {
         child: BaseButton(
           isLoading: loading,
           onPressed: () async {
+            if (widget.emailController.text.isEmpty ||
+                widget.passwordController.text.isEmpty) {
+              Fluttertoast.showToast(msg: "Please fill the inputs");
+              return;
+            }
             changeLoading();
             var result = widget.isLogin
                 ? await context.read<UserRepository>().signInWithEmailPassword(

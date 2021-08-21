@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:virtual_study_app/src/service/firestore_service.dart';
 
 enum UserState { Init, Loading, Unauthenticated, Authenticated }
 
@@ -12,8 +13,8 @@ class UserRepository extends ChangeNotifier {
     checkUser();
   }
 
-  User get user => user;
-  set user(User user) {
+  User? get user => _user;
+  set user(User? user) {
     _user = user;
     notifyListeners();
   }
@@ -47,10 +48,12 @@ class UserRepository extends ChangeNotifier {
         password: password,
       );
       user = userCredential.user!;
+      await FirestoreService.instance.addUser(
+          id: user!.uid, name: user!.displayName ?? "", email: user!.email!);
       state = UserState.Authenticated;
       return true;
-    } on FirebaseException catch (e) {
-      Fluttertoast.showToast(msg: e.message.toString());
+    } catch (e) {
+      Fluttertoast.showToast(msg: e.toString());
       state = UserState.Unauthenticated;
       return false;
     }
