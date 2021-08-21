@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:virtual_study_app/src/screens/home/home_screen.dart';
 
 import '../../widgets/images/chat_image.dart';
 import '../../widgets/inputs/base_text_input.dart';
@@ -16,7 +17,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final TextEditingController emailController = TextEditingController();
 
   final TextEditingController passworController = TextEditingController();
-  bool isLogin = true;
+  bool isLogin = false;
 
   void changePage() {
     setState(() {
@@ -36,11 +37,17 @@ class _AuthScreenState extends State<AuthScreen> {
             SizedBox(
               height: context.highValue,
             ),
-            BaseTextInput(controller: emailController, hintText: "Email"),
+            BaseTextInput(
+                isPassword: false,
+                controller: emailController,
+                hintText: "Email"),
             SizedBox(
               height: context.height * 0.025,
             ),
-            BaseTextInput(controller: passworController, hintText: "Password"),
+            BaseTextInput(
+                isPassword: true,
+                controller: passworController,
+                hintText: "Password"),
             SizedBox(
               height: context.mediumValue,
             ),
@@ -48,7 +55,13 @@ class _AuthScreenState extends State<AuthScreen> {
                 isLogin: isLogin,
                 emailController: emailController,
                 passwordController: passworController,
-                onFinish: (success, err) {}),
+                onFinish: (success, err) {
+                  if (success) {
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (_) => HomeScreen()),
+                        (route) => false);
+                  }
+                }),
             SizedBox(
               height: context.lowValue,
             ),
@@ -57,7 +70,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   changePage();
                 },
                 child: Text(
-                  isLogin ? 'Already have an account' : "Create an account",
+                  !isLogin ? 'Already have an account' : "Create an account",
                   style: TextStyle(
                       color: Colors.black,
                       decoration: TextDecoration.underline),

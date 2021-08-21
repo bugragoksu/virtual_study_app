@@ -76,6 +76,7 @@ class DetailScreen extends StatelessWidget {
     return Container(
       width: context.width / 2,
       child: BaseButton(
+        isLoading: false,
         onPressed: () {
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (_) => MeetScreen()));
