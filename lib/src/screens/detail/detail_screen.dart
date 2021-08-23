@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:virtual_study_app/src/model/category_model.dart';
 import 'package:virtual_study_app/src/screens/meet/meet_screen.dart';
 
 import '../../core/extensions/context_extension.dart';
@@ -6,7 +7,8 @@ import '../../widgets/buttons/base_button.dart';
 import '../../widgets/images/chat_image.dart';
 
 class DetailScreen extends StatelessWidget {
-  const DetailScreen({Key? key}) : super(key: key);
+  final CourseModel course;
+  const DetailScreen({Key? key, required this.course}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +22,13 @@ class DetailScreen extends StatelessWidget {
               Spacer(),
               Expanded(
                 child: Text(
-                  'Title',
+                  course.title,
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               ),
               Expanded(
                 child: Text(
-                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et velit suscipit, ultricies nisl sed, hendrerit enim. Vivamus consectetur, nunc in viverra tristique, magna augue sodales nunc,',
+                  course.desc,
                   overflow: TextOverflow.visible,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),

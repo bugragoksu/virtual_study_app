@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:virtual_study_app/src/widgets/images/chat_image.dart';
 
 class CourseCard extends StatelessWidget {
   final VoidCallback onTap;
@@ -23,8 +22,14 @@ class CourseCard extends StatelessWidget {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           color: Colors.blue,
           child: Stack(
+            fit: StackFit.passthrough,
             children: [
-              ChatImage(),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  imageURL,
+                ),
+              ),
               Positioned(
                   left: 10,
                   bottom: 10,

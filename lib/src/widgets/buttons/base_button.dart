@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:virtual_study_app/src/widgets/white_progress_indicator.dart';
 
 class BaseButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -15,13 +16,7 @@ class BaseButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: onPressed,
-      child: isLoading
-          ? Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              ),
-            )
-          : Text(title),
+      child: isLoading ? WhiteProgressIndicator() : Text(title),
       style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
