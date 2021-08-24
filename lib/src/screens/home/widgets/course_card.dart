@@ -18,16 +18,17 @@ class CourseCard extends StatelessWidget {
       child: Container(
         width: width / 2,
         child: Card(
+          elevation: 5,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          color: Colors.blue,
           child: Stack(
-            fit: StackFit.passthrough,
+            fit: StackFit.expand,
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Image.network(
                   imageURL,
+                  fit: BoxFit.fill,
                 ),
               ),
               Positioned(
