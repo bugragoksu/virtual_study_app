@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:virtual_study_app/src/model/category_model.dart';
+import 'package:virtual_study_app/src/model/user_model.dart';
 
 class FirestoreService {
   FirestoreService._privateConstructor();
@@ -30,7 +31,7 @@ class FirestoreService {
     result.docs.forEach((categoryElement) async {
       var courses = await _getCoursesFromFirebase(categoryElement.id);
       CategoryModel categoryModel = new CategoryModel(
-          id: categoryElement.data().id,
+          id: categoryElement.id,
           title: categoryElement.data().title,
           courses: courses);
       categories.add(categoryModel);
@@ -46,12 +47,32 @@ class FirestoreService {
         .collection('courses')
         .withConverter<CourseModel>(
             fromFirestore: (snapshot, _) =>
-                CourseModel.fromJson(snapshot.data()!),
+                CourseModel.fromJson(snapshot.id, snapshot.data()!),
             toFirestore: (course, _) => {})
         .get();
     result.docs.forEach((element) {
       courses.add(element.data());
     });
     return courses;
+  }
+
+  Future<List<UserModel>> getActiveUsers(
+      String categorieId, String courseId) async {
+    List<UserModel> users = [];
+    var result = await FirebaseFirestore.instance
+        .collection('categories')
+        .doc(categorieId)
+        .collection('courses')
+        .doc(courseId)
+        .collection('active_users')
+        .withConverter<UserModel>(
+            fromFirestore: (snapshot, _) =>
+                UserModel.fromJson(snapshot.data()!),
+            toFirestore: (user, _) => {})
+        .get();
+    result.docs.forEach((element) {
+      users.add(element.data());
+    });
+    return users;
   }
 }

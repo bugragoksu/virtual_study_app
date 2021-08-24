@@ -81,6 +81,8 @@ class _HomeScreenState extends State<HomeScreen> {
         Expanded(
             flex: 5,
             child: CardList(
+                categoryId:
+                    context.read<CategoryRepository>().categories![index].id,
                 courses: context
                     .read<CategoryRepository>()
                     .categories![index]

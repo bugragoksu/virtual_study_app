@@ -1,14 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:virtual_study_app/src/model/category_model.dart';
+import 'package:virtual_study_app/src/provider/user_repository.dart';
 import 'package:virtual_study_app/src/screens/meet/meet_screen.dart';
 
 import '../../core/extensions/context_extension.dart';
 import '../../widgets/buttons/base_button.dart';
 import '../../widgets/images/chat_image.dart';
+import 'package:provider/provider.dart';
 
-class DetailScreen extends StatelessWidget {
+class DetailScreen extends StatefulWidget {
   final CourseModel course;
-  const DetailScreen({Key? key, required this.course}) : super(key: key);
+  final String categoryId;
+  const DetailScreen({Key? key, required this.categoryId, required this.course})
+      : super(key: key);
+
+  @override
+  _DetailScreenState createState() => _DetailScreenState();
+}
+
+class _DetailScreenState extends State<DetailScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => context
+        .read<UserRepository>()
+        .getActiveUserForCourse(widget.categoryId, widget.course.id));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +39,13 @@ class DetailScreen extends StatelessWidget {
               Spacer(),
               Expanded(
                 child: Text(
-                  course.title,
+                  widget.course.title,
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               ),
               Expanded(
                 child: Text(
-                  course.desc,
+                  widget.course.desc,
                   overflow: TextOverflow.visible,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
@@ -46,7 +63,16 @@ class DetailScreen extends StatelessWidget {
               ),
               Divider(),
               Expanded(
-                child: _buildActiveUserList(context),
+                child: context.watch<UserRepository>().state ==
+                            UserState.Loading ||
+                        context.watch<UserRepository>().users == null
+                    ? Center(
+                        child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.black),
+                        ),
+                      )
+                    : _buildActiveUserList(context),
               ),
               Divider(),
               Spacer(),
@@ -60,14 +86,15 @@ class DetailScreen extends StatelessWidget {
 
   ListView _buildActiveUserList(BuildContext context) {
     return ListView.builder(
-      itemCount: 10,
+      itemCount: context.read<UserRepository>().users!.length,
       scrollDirection: Axis.horizontal,
       itemBuilder: (_, i) => Container(
         height: context.width / 5,
         width: context.width / 5,
         decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.black),
         child: Center(
-            child: Text('H',
+            child: Text(
+                context.read<UserRepository>().users![i].email[0].toUpperCase(),
                 style: TextStyle(
                     color: Colors.white, fontWeight: FontWeight.bold))),
       ),

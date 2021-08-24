@@ -22,9 +22,9 @@ class CourseModel {
       required this.desc,
       required this.img});
 
-  CourseModel.fromJson(Map<String, Object?> json)
+  CourseModel.fromJson(String id, Map<String, Object?> json)
       : this(
-          id: json['id']! as String,
+          id: id,
           title: json['title']! as String,
           desc: json['desc']! as String,
           img: json['img']! as String,

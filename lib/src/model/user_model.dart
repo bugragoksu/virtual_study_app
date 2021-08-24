@@ -10,7 +10,7 @@ class UserModel {
       : this(
           id: json['id']! as String,
           email: json['email']! as String,
-          username: json['username'] as String,
-          img: json['img'] as String,
+          username: json['username'] as String?,
+          img: json['img'] as String?,
         );
 }
