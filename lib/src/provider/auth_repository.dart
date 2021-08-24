@@ -5,11 +5,11 @@ import 'package:virtual_study_app/src/service/firestore_service.dart';
 
 enum UserState { Init, Loading, Unauthenticated, Authenticated }
 
-class UserRepository extends ChangeNotifier {
+class AuthRepository extends ChangeNotifier {
   User? _user;
   UserState _state = UserState.Init;
 
-  UserRepository() {
+  AuthRepository() {
     checkUser();
   }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:virtual_study_app/src/provider/category_repository.dart';
-import 'package:virtual_study_app/src/provider/user_repository.dart';
+import 'package:virtual_study_app/src/provider/auth_repository.dart';
 import 'package:virtual_study_app/src/screens/auth/auth_screen.dart';
 
 import '../../widgets/texts/bold_text.dart';
@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
               onPressed: () async {
-                await context.read<UserRepository>().signOut();
+                await context.read<AuthRepository>().signOut();
                 Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(builder: (_) => AuthScreen()),
                     (route) => false);

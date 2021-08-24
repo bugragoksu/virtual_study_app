@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../provider/user_repository.dart';
+import '../../provider/auth_repository.dart';
 import '../../widgets/images/chat_image.dart';
 import '../auth/auth_screen.dart';
 import '../home/home_screen.dart';
 
 class SplashScreen extends StatelessWidget {
   SplashScreen({Key? key}) : super(key: key);
-  late UserRepository _userRepository;
+  late AuthRepository _userRepository;
   @override
   Widget build(BuildContext context) {
-    _userRepository = Provider.of<UserRepository>(context);
+    _userRepository = Provider.of<AuthRepository>(context);
     checkAndNavigateUser(_userRepository, context);
     return Scaffold(
       body: Center(
@@ -23,7 +23,7 @@ class SplashScreen extends StatelessWidget {
     );
   }
 
-  void checkAndNavigateUser(UserRepository repo, BuildContext context) {
+  void checkAndNavigateUser(AuthRepository repo, BuildContext context) {
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       if (repo.state == UserState.Authenticated) {
         Navigator.of(context).pushAndRemoveUntil(

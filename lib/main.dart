@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:virtual_study_app/src/provider/category_repository.dart';
 
-import 'src/provider/user_repository.dart';
+import 'src/provider/auth_repository.dart';
 import 'src/screens/splash/splash_screen.dart';
 
 Future<void> main() async {
@@ -13,8 +13,8 @@ Future<void> main() async {
     providers: [
       ChangeNotifierProvider<CategoryRepository>(
           create: (_) => CategoryRepository()),
-      ChangeNotifierProvider<UserRepository>(
-        create: (_) => UserRepository(),
+      ChangeNotifierProvider<AuthRepository>(
+        create: (_) => AuthRepository(),
       ),
     ],
     child: MaterialApp(debugShowCheckedModeBanner: false, home: SplashScreen()),

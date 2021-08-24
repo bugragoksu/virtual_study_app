@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../../../provider/user_repository.dart';
+import '../../../provider/auth_repository.dart';
 import 'package:provider/provider.dart';
 import '../../../widgets/buttons/base_button.dart';
 
@@ -45,11 +45,11 @@ class _SignButtonState extends State<SignButton> {
             }
             changeLoading();
             var result = widget.isLogin
-                ? await context.read<UserRepository>().signInWithEmailPassword(
+                ? await context.read<AuthRepository>().signInWithEmailPassword(
                     email: widget.emailController.text.trim(),
                     password: widget.passwordController.text.trim())
                 : await context
-                    .read<UserRepository>()
+                    .read<AuthRepository>()
                     .registerUsingEmailPassword(
                         email: widget.emailController.text.trim(),
                         password: widget.passwordController.text.trim());
