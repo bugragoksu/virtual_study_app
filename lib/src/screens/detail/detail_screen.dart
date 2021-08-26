@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:virtual_study_app/src/model/category_model.dart';
+import 'package:virtual_study_app/src/provider/permission_repository.dart';
 import 'package:virtual_study_app/src/provider/user_repository.dart';
 import 'package:virtual_study_app/src/screens/meet/meet_screen.dart';
 
@@ -106,7 +107,19 @@ class _DetailScreenState extends State<DetailScreen> {
       width: context.width / 2,
       child: BaseButton(
         isLoading: false,
-        onPressed: () {
+        onPressed: () async {
+          final cameraState = context.read<PermissionRepository>().cameraState;
+          if (cameraState == CameraState.Denied) {
+            await context
+                .read<PermissionRepository>()
+                .requestCameraPermission();
+            return;
+          }
+          final micState = context.read<PermissionRepository>().microphoneState;
+          if (micState == MicrophoneState.Denied) {
+            await context.read<PermissionRepository>().requestMicPermission();
+            return;
+          }
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (_) => MeetScreen()));
         },
