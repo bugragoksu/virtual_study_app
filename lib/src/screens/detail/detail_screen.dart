@@ -111,24 +111,25 @@ class _DetailScreenState extends State<DetailScreen> {
         isLoading: false,
         onPressed: () async {
           final cameraState = context.read<PermissionRepository>().cameraState;
-          if (cameraState == CameraState.Denied) {
+          bool cameraBool = cameraState == CameraState.Denied;
+          if (cameraBool) {
             await context
                 .read<PermissionRepository>()
                 .requestCameraPermission();
-            return;
           }
           final micState = context.read<PermissionRepository>().microphoneState;
-          if (micState == MicrophoneState.Denied) {
+          bool micBool = micState == MicrophoneState.Denied;
+          if (micBool) {
             await context.read<PermissionRepository>().requestMicPermission();
-            return;
           }
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (_) => ChangeNotifierProvider(
-                  lazy: false,
-                  create: (_) => AgoraRepository(
-                      channelName: widget.course.id,
-                      userId: context.read<AuthRepository>().user!.uid),
-                  child: MeetScreen())));
+          if (!cameraBool && !micBool)
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (_) => ChangeNotifierProvider(
+                    lazy: false,
+                    create: (_) => AgoraRepository(
+                        channelName: widget.course.id,
+                        userId: context.read<AuthRepository>().user!.uid),
+                    child: MeetScreen())));
         },
         title: "Join",
       ),

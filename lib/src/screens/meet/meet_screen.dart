@@ -49,17 +49,11 @@ class _MeetScreenState extends State<MeetScreen> {
                           crossAxisCount: 2),
                       itemCount:
                           context.watch<AgoraRepository>().users.length + 1,
-                      itemBuilder: (_, i) => i == 0 && isCameraOpen
+                      itemBuilder: (_, i) => i == 0
                           ? _buildMeetCard(RtcLocalView.SurfaceView())
-                          : _buildMeetCard(
-                              Text(
-                                'H',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 36,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            )),
+                          : _buildMeetCard(RtcRemoteView.SurfaceView(
+                              uid: context.read<AgoraRepository>().users[i - 1],
+                            ))),
                   Positioned(
                       bottom: context.mediumValue,
                       left: context.lowValue,

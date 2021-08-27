@@ -21,15 +21,15 @@ class AgoraRepository extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<String> _users = <String>[];
-  List<String> get users => _users;
+  List<int> _users = <int>[];
+  List<int> get users => _users;
 
-  _addUser(String uid) {
+  _addUser(int uid) {
     users.add(uid);
     notifyListeners();
   }
 
-  _removeUser(String uid) {
+  _removeUser(int uid) {
     users.remove(uid);
     notifyListeners();
   }
@@ -72,11 +72,11 @@ class AgoraRepository extends ChangeNotifier {
     }, userJoined: (uid, elapsed) {
       final info = 'userJoined: $uid';
       print("AGORA INFO ! : $info");
-      _addUser(uid.toString());
+      _addUser(uid);
     }, userOffline: (uid, elapsed) {
       final info = 'userOffline: $uid';
       print("AGORA INFO ! : $info");
-      _removeUser(uid.toString());
+      _removeUser(uid);
     }, firstRemoteVideoFrame: (uid, width, height, elapsed) {
       final info = 'firstRemoteVideo: $uid ${width}x $height';
       print("AGORA INFO ! : $info");
