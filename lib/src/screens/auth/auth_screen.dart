@@ -33,7 +33,7 @@ class _AuthScreenState extends State<AuthScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ChatImage(),
+            Flexible(flex: 1, child: ChatImage()),
             SizedBox(
               height: context.highValue,
             ),

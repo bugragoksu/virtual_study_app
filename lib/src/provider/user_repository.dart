@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:virtual_study_app/src/model/user_model.dart';
 import 'package:virtual_study_app/src/service/firestore_service.dart';
 
-enum UserState { Init, Loading, Loaded, Error }
+enum UserStateEnum { Init, Loading, Loaded, Error }
 
 class UserRepository extends ChangeNotifier {
-  UserState _state = UserState.Init;
-  UserState get state => _state;
-  set state(UserState value) {
+  UserStateEnum _state = UserStateEnum.Init;
+  UserStateEnum get state => _state;
+  set state(UserStateEnum value) {
     _state = value;
     notifyListeners();
   }
@@ -22,13 +22,13 @@ class UserRepository extends ChangeNotifier {
   Future<List<UserModel>> getActiveUserForCourse(
       String categorieId, String courseId) async {
     try {
-      state = UserState.Loading;
+      state = UserStateEnum.Loading;
       users =
           await FirestoreService.instance.getActiveUsers(categorieId, courseId);
-      state = UserState.Loaded;
+      state = UserStateEnum.Loaded;
       return users!;
     } catch (e) {
-      state = UserState.Error;
+      state = UserStateEnum.Error;
       return [];
     }
   }

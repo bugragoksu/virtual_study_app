@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:virtual_study_app/src/model/category_model.dart';
+import 'package:virtual_study_app/src/provider/agora_repository.dart';
+import 'package:virtual_study_app/src/provider/auth_repository.dart';
 import 'package:virtual_study_app/src/provider/permission_repository.dart';
 import 'package:virtual_study_app/src/provider/user_repository.dart';
 import 'package:virtual_study_app/src/screens/meet/meet_screen.dart';
@@ -65,7 +67,7 @@ class _DetailScreenState extends State<DetailScreen> {
               Divider(),
               Expanded(
                 child: context.watch<UserRepository>().state ==
-                            UserState.Loading ||
+                            UserStateEnum.Loading ||
                         context.watch<UserRepository>().users == null
                     ? Center(
                         child: CircularProgressIndicator(
@@ -120,8 +122,13 @@ class _DetailScreenState extends State<DetailScreen> {
             await context.read<PermissionRepository>().requestMicPermission();
             return;
           }
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (_) => MeetScreen()));
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => ChangeNotifierProvider(
+                  lazy: false,
+                  create: (_) => AgoraRepository(
+                      channelName: widget.course.id,
+                      userId: context.read<AuthRepository>().user!.uid),
+                  child: MeetScreen())));
         },
         title: "Join",
       ),
