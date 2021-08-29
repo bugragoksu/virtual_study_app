@@ -75,4 +75,67 @@ class FirestoreService {
     });
     return users;
   }
+
+  Future<UserModel> _getUser(String uid) async {
+    UserModel? userModel;
+    var result = await _getUserQueryDocumentSnapshot(uid);
+    result.docs.forEach((element) {
+      userModel = element.data();
+    });
+    return userModel!;
+  }
+
+  Future<QuerySnapshot<UserModel>> _getUserQueryDocumentSnapshot(
+      String uid) async {
+    var result = await FirebaseFirestore.instance
+        .collection('user')
+        .where('id', isEqualTo: uid)
+        .withConverter(
+            fromFirestore: (snapshot, _) =>
+                UserModel.fromJson(snapshot.data()!),
+            toFirestore: (user, _) => {})
+        .get();
+
+    return result;
+  }
+
+  Future<void> addActiveUser(
+      {required String categoryId,
+      required String courseId,
+      required String userId}) async {
+    var user = await _getUser(userId);
+    await FirebaseFirestore.instance
+        .collection('categories')
+        .doc(categoryId)
+        .collection('courses')
+        .doc(courseId)
+        .collection('active_users')
+        .add({"id": user.id, "email": user.email});
+  }
+
+  Future<void> removeActiveUser(
+      {required String categoryId,
+      required String courseId,
+      required String userId}) async {
+    var result = await FirebaseFirestore.instance
+        .collection('categories')
+        .doc(categoryId)
+        .collection('courses')
+        .doc(courseId)
+        .collection('active_users')
+        .where('id', isEqualTo: userId)
+        .get()
+        .then((value) => value);
+
+    result.docs.forEach((element) {
+      FirebaseFirestore.instance
+          .collection('categories')
+          .doc(categoryId)
+          .collection('courses')
+          .doc(courseId)
+          .collection('active_users')
+          .doc(element.id)
+          .delete();
+    });
+  }
 }

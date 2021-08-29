@@ -56,7 +56,7 @@ class _MeetScreenState extends State<MeetScreen> {
                             ))),
                   Positioned(
                       bottom: context.mediumValue,
-                      left: context.lowValue,
+                      left: context.mediumValue * 1.5,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
@@ -86,17 +86,6 @@ class _MeetScreenState extends State<MeetScreen> {
                                 buttonColor: Colors.white,
                                 onPressed: switchCamera,
                                 icon: Icon(Icons.cameraswitch,
-                                    color: Colors.black)),
-                            SizedBox(
-                              width: context.width * 0.05,
-                            ),
-                            _buildButton(
-                                buttonColor: Colors.white,
-                                onPressed: changeCamera,
-                                icon: Icon(
-                                    isCameraOpen
-                                        ? Icons.videocam
-                                        : Icons.videocam_off,
                                     color: Colors.black)),
                           ],
                         ),

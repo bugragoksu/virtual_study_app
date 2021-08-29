@@ -1,6 +1,7 @@
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:virtual_study_app/agora_config.dart';
+import 'package:virtual_study_app/src/service/firestore_service.dart';
 import 'package:virtual_study_app/src/service/http_service.dart';
 
 enum AgoraState { Init, Loading, Ready }
@@ -9,10 +10,17 @@ class AgoraRepository extends ChangeNotifier {
   RtcEngine? _engine;
   final String channelName;
   final String userId;
+  final String courseId;
+  final String categoryId;
 
   AgoraState _state = AgoraState.Init;
 
-  AgoraRepository({required this.channelName, required this.userId}) {
+  AgoraRepository(
+      {required this.courseId,
+      required this.categoryId,
+      required this.channelName,
+      required this.userId}) {
+    addUserToFirestore();
     initAgora();
   }
   AgoraState get state => _state;
@@ -84,6 +92,8 @@ class AgoraRepository extends ChangeNotifier {
   }
 
   leaveChannel() async {
+    FirestoreService.instance.removeActiveUser(
+        categoryId: categoryId, courseId: courseId, userId: userId);
     await _engine!.leaveChannel();
     await _engine!.destroy();
   }
@@ -94,5 +104,10 @@ class AgoraRepository extends ChangeNotifier {
 
   muteToggle(bool value) async {
     await _engine!.muteLocalAudioStream(value);
+  }
+
+  Future<void> addUserToFirestore() async {
+    await FirestoreService.instance.addActiveUser(
+        categoryId: categoryId, courseId: courseId, userId: userId);
   }
 }

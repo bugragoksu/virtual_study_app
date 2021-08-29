@@ -127,6 +127,8 @@ class _DetailScreenState extends State<DetailScreen> {
                 builder: (_) => ChangeNotifierProvider(
                     lazy: false,
                     create: (_) => AgoraRepository(
+                        courseId: widget.course.id,
+                        categoryId: widget.categoryId,
                         channelName: widget.course.id,
                         userId: context.read<AuthRepository>().user!.uid),
                     child: MeetScreen())));
