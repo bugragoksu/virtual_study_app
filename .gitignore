@@ -50,3 +50,6 @@ android/app/google-services.json
 ios/Runner/GoogleService-Info.plist
 
 /lib/agora_config.dart
+
+**.keystore
+/android/keystore.properties

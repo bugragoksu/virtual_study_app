@@ -110,18 +110,18 @@ class _DetailScreenState extends State<DetailScreen> {
       child: BaseButton(
         isLoading: false,
         onPressed: () async {
-          final cameraState = context.read<PermissionRepository>().cameraState;
-          bool cameraBool = cameraState == CameraState.Denied;
+          bool cameraBool = _checkCameraPermission();
           if (cameraBool) {
             await context
                 .read<PermissionRepository>()
                 .requestCameraPermission();
           }
-          final micState = context.read<PermissionRepository>().microphoneState;
-          bool micBool = micState == MicrophoneState.Denied;
+          bool micBool = _checkMicPermission();
           if (micBool) {
             await context.read<PermissionRepository>().requestMicPermission();
           }
+          cameraBool = _checkCameraPermission();
+          micBool = _checkMicPermission();
           if (!cameraBool && !micBool)
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (_) => ChangeNotifierProvider(
@@ -136,5 +136,15 @@ class _DetailScreenState extends State<DetailScreen> {
         title: "Join",
       ),
     );
+  }
+
+  bool _checkCameraPermission() {
+    final cameraState = context.read<PermissionRepository>().cameraState;
+    return cameraState == CameraState.Denied;
+  }
+
+  bool _checkMicPermission() {
+    final micState = context.read<PermissionRepository>().microphoneState;
+    return micState == MicrophoneState.Denied;
   }
 }
