@@ -12,6 +12,19 @@ class AgoraRepository extends ChangeNotifier {
   final String userId;
   final String courseId;
   final String categoryId;
+  bool _isCameraOpen = true, _isMicOpen = true;
+
+  bool get isCameraOpen => _isCameraOpen;
+  set isCameraOpen(bool value) {
+    _isCameraOpen = value;
+    notifyListeners();
+  }
+
+  bool get isMicOpen => _isMicOpen;
+  set isMicOpen(bool value) {
+    _isMicOpen = value;
+    notifyListeners();
+  }
 
   AgoraState _state = AgoraState.Init;
 
@@ -102,12 +115,18 @@ class AgoraRepository extends ChangeNotifier {
     await _engine!.switchCamera();
   }
 
-  muteToggle(bool value) async {
-    await _engine!.muteLocalAudioStream(value);
+  muteToggle() async {
+    isMicOpen = !isMicOpen;
+    await _engine!.muteLocalAudioStream(!isMicOpen);
   }
 
   Future<void> addUserToFirestore() async {
     await FirestoreService.instance.addActiveUser(
         categoryId: categoryId, courseId: courseId, userId: userId);
+  }
+
+  cameraToggle() async {
+    isCameraOpen = !isCameraOpen;
+    await _engine!.enableLocalVideo(isCameraOpen);
   }
 }

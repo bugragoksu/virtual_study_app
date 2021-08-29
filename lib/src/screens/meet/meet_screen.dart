@@ -13,22 +13,17 @@ class MeetScreen extends StatefulWidget {
 }
 
 class _MeetScreenState extends State<MeetScreen> {
-  bool isMicOpen = true, isCameraOpen = true;
-
   void switchCamera() async {
     await context.read<AgoraRepository>().switchCamera();
   }
 
   void changeMic() async {
-    isMicOpen = !isMicOpen;
-    await context.read<AgoraRepository>().muteToggle(!isMicOpen);
-    setState(() {});
+    await context.read<AgoraRepository>().muteToggle();
   }
 
-  void changeCamera() {
-    setState(() {
-      isCameraOpen = !isCameraOpen;
-    });
+  Future<void> changeCamera() async {
+    await context.read<AgoraRepository>().cameraToggle();
+    setState(() {});
   }
 
   @override
@@ -50,13 +45,22 @@ class _MeetScreenState extends State<MeetScreen> {
                       itemCount:
                           context.watch<AgoraRepository>().users.length + 1,
                       itemBuilder: (_, i) => i == 0
-                          ? _buildMeetCard(RtcLocalView.SurfaceView())
+                          ? _buildMeetCard(
+                              context.watch<AgoraRepository>().isCameraOpen
+                                  ? RtcLocalView.SurfaceView()
+                                  : Text(
+                                      'H',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 32),
+                                    ))
                           : _buildMeetCard(RtcRemoteView.SurfaceView(
                               uid: context.read<AgoraRepository>().users[i - 1],
                             ))),
                   Positioned(
                       bottom: context.mediumValue,
-                      left: context.mediumValue * 1.5,
+                      left: context.lowValue,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
@@ -77,7 +81,9 @@ class _MeetScreenState extends State<MeetScreen> {
                                 buttonColor: Colors.white,
                                 onPressed: changeMic,
                                 icon: Icon(
-                                    isMicOpen ? Icons.mic : Icons.mic_off,
+                                    context.watch<AgoraRepository>().isMicOpen
+                                        ? Icons.mic
+                                        : Icons.mic_off,
                                     color: Colors.black)),
                             SizedBox(
                               width: context.width * 0.05,
@@ -86,6 +92,19 @@ class _MeetScreenState extends State<MeetScreen> {
                                 buttonColor: Colors.white,
                                 onPressed: switchCamera,
                                 icon: Icon(Icons.cameraswitch,
+                                    color: Colors.black)),
+                            SizedBox(
+                              width: context.width * 0.05,
+                            ),
+                            _buildButton(
+                                buttonColor: Colors.white,
+                                onPressed: changeCamera,
+                                icon: Icon(
+                                    context
+                                            .watch<AgoraRepository>()
+                                            .isCameraOpen
+                                        ? Icons.videocam
+                                        : Icons.videocam_off,
                                     color: Colors.black)),
                           ],
                         ),
