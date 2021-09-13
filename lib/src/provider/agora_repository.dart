@@ -1,6 +1,7 @@
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:virtual_study_app/agora_config.dart';
+import 'package:virtual_study_app/src/model/user_status_model.dart';
 import 'package:virtual_study_app/src/service/firestore_service.dart';
 import 'package:virtual_study_app/src/service/http_service.dart';
 
@@ -13,6 +14,7 @@ class AgoraRepository extends ChangeNotifier {
   final String courseId;
   final String categoryId;
   bool _isCameraOpen = true, _isMicOpen = true;
+  List<UserStatusModel> userStats = [];
 
   bool get isCameraOpen => _isCameraOpen;
   set isCameraOpen(bool value) {
@@ -28,11 +30,7 @@ class AgoraRepository extends ChangeNotifier {
 
   AgoraState _state = AgoraState.Init;
 
-  AgoraRepository(
-      {required this.courseId,
-      required this.categoryId,
-      required this.channelName,
-      required this.userId}) {
+  AgoraRepository({required this.courseId, required this.categoryId, required this.channelName, required this.userId}) {
     addUserToFirestore();
     initAgora();
   }
@@ -47,18 +45,19 @@ class AgoraRepository extends ChangeNotifier {
 
   _addUser(int uid) {
     users.add(uid);
+    userStats.add(UserStatusModel(uid: uid));
     notifyListeners();
   }
 
   _removeUser(int uid) {
     users.remove(uid);
+    userStats.removeWhere((element) => element.uid == uid);
     notifyListeners();
   }
 
   Future<void> initAgora() async {
     state = AgoraState.Loading;
-    final token = await HttpService.instance
-        .getToken(channelName: channelName, uid: userId);
+    final token = await HttpService.instance.getToken(channelName: channelName, uid: userId);
     if (token.isEmpty) return;
     await _initAgoraRtcEngine();
     _addAgoraEventHandlers();
@@ -77,10 +76,8 @@ class AgoraRepository extends ChangeNotifier {
   }
 
   void _addAgoraEventHandlers() {
-    _engine!.setEventHandler(
-        RtcEngineEventHandler(tokenPrivilegeWillExpire: (_) async {
-      final token = await HttpService.instance
-          .getToken(channelName: channelName, uid: userId);
+    _engine!.setEventHandler(RtcEngineEventHandler(tokenPrivilegeWillExpire: (_) async {
+      final token = await HttpService.instance.getToken(channelName: channelName, uid: userId);
       await _engine!.renewToken(token);
     }, error: (code) {
       final info = 'onError: $code';
@@ -101,12 +98,26 @@ class AgoraRepository extends ChangeNotifier {
     }, firstRemoteVideoFrame: (uid, width, height, elapsed) {
       final info = 'firstRemoteVideo: $uid ${width}x $height';
       print("AGORA INFO ! : $info");
+    }, remoteVideoStateChanged: (uid, state, reasone, elapsed) async {
+      final info = 'remoteVideoStateChanged: $uid';
+      print("AGORA INFO ! : $info");
+      if (state == VideoRemoteState.Stopped || state == VideoRemoteState.Failed) {
+        _muteRemoteVideo(uid, true);
+      } else if (state == VideoRemoteState.Decoding || state == VideoRemoteState.Starting) {
+        _muteRemoteVideo(uid, false);
+      }
     }));
   }
 
+  _muteRemoteVideo(int uid, bool muted) async {
+    int index = userStats.indexWhere((element) => element.uid == uid);
+    userStats[index].isCameraOn = !muted;
+    await _engine!.muteRemoteVideoStream(uid, muted);
+    notifyListeners();
+  }
+
   leaveChannel() async {
-    FirestoreService.instance.removeActiveUser(
-        categoryId: categoryId, courseId: courseId, userId: userId);
+    FirestoreService.instance.removeActiveUser(categoryId: categoryId, courseId: courseId, userId: userId);
     await _engine!.leaveChannel();
     await _engine!.destroy();
   }
@@ -121,8 +132,7 @@ class AgoraRepository extends ChangeNotifier {
   }
 
   Future<void> addUserToFirestore() async {
-    await FirestoreService.instance.addActiveUser(
-        categoryId: categoryId, courseId: courseId, userId: userId);
+    await FirestoreService.instance.addActiveUser(categoryId: categoryId, courseId: courseId, userId: userId);
   }
 
   cameraToggle() async {

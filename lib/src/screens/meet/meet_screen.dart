@@ -21,9 +21,8 @@ class _MeetScreenState extends State<MeetScreen> {
     await context.read<AgoraRepository>().muteToggle();
   }
 
-  Future<void> changeCamera() async {
+  void changeCamera() async {
     await context.read<AgoraRepository>().cameraToggle();
-    setState(() {});
   }
 
   @override
@@ -44,20 +43,31 @@ class _MeetScreenState extends State<MeetScreen> {
                           crossAxisCount: 2),
                       itemCount:
                           context.watch<AgoraRepository>().users.length + 1,
-                      itemBuilder: (_, i) => i == 0
-                          ? _buildMeetCard(
+                      itemBuilder: (_, i) {
+                        if (i == 0)
+                          return _buildMeetCard(
                               context.watch<AgoraRepository>().isCameraOpen
                                   ? RtcLocalView.SurfaceView()
-                                  : Text(
-                                      'H',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 32),
-                                    ))
-                          : _buildMeetCard(RtcRemoteView.SurfaceView(
-                              uid: context.read<AgoraRepository>().users[i - 1],
-                            ))),
+                                  : _buildMutedVideoTextWidget());
+                        else {
+                          int uid =
+                              context.read<AgoraRepository>().users[i - 1];
+                          var userIndex = context
+                              .watch<AgoraRepository>()
+                              .userStats
+                              .indexWhere((element) => element.uid == uid);
+                          bool isCameraOn = context
+                                  .watch<AgoraRepository>()
+                                  .userStats[userIndex]
+                                  .isCameraOn ??
+                              true;
+                          return _buildMeetCard(isCameraOn
+                              ? RtcRemoteView.SurfaceView(
+                                  uid: uid,
+                                )
+                              : _buildMutedVideoTextWidget());
+                        }
+                      }),
                   Positioned(
                       bottom: context.mediumValue,
                       left: context.lowValue,
@@ -112,6 +122,14 @@ class _MeetScreenState extends State<MeetScreen> {
                 ],
               ),
       ),
+    );
+  }
+
+  Widget _buildMutedVideoTextWidget() {
+    return Text(
+      'H',
+      style: TextStyle(
+          color: Colors.white, fontWeight: FontWeight.bold, fontSize: 32),
     );
   }
 
